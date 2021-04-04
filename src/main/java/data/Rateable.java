@@ -2,10 +2,10 @@
  *     PROJECT : EUROPASS
  *
  *     PACKAGE : data
- *        FILE : Rating.java
+ *        FILE : Rateable.java
  *
  *  CREATED BY : ARHS Developments
- *          ON : avr. 01, 2021
+ *          ON : avr. 04, 2021
  *
  * MODIFIED BY : ARHS Developments
  *          ON :
@@ -20,27 +20,26 @@ package data;
 /**
  * <class_description>
  * <p><b>notes</b>:
- * <p>ON : avr. 01, 2021
+ * <p>ON : avr. 04, 2021
  *
  * @author ARHS Developments - hubertrm
  */
-public enum Rating {
+@FunctionalInterface
+public interface Rateable<T> {
+	public static final Rating DEFAULT_RATING = Rating.NOT_RATED;
 
-	NOT_RATED("NOT RATED"),
-	ZERO_STAR("☆☆☆☆☆"),
-	ONE_STAR("★☆☆☆☆"),
-	TWO_STAR("★★☆☆☆"),
-	THREE_STAR("★★★☆☆"),
-	FOUR_STAR("★★★★☆"),
-	FIVE_STAR("★★★★★");
+	public abstract T applyRating(Rating rating);
 
-	private final String starts;
-
-	Rating(String rating) {
-		this.starts = rating;
+	public default T applyRating(int stars) {
+		return applyRating(convert(stars));
 	}
 
-	public String getStars() {
-		return starts;
+	public default Rating getRating() {
+		return DEFAULT_RATING;
 	}
+
+	public static Rating convert(int stars) {
+		return (stars >= 0 && stars <= 5) ? Rating.values()[stars] : DEFAULT_RATING;
+	}
+
 }

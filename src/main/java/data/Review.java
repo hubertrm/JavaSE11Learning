@@ -2,10 +2,10 @@
  *     PROJECT : EUROPASS
  *
  *     PACKAGE : data
- *        FILE : Rating.java
+ *        FILE : Review.java
  *
  *  CREATED BY : ARHS Developments
- *          ON : avr. 01, 2021
+ *          ON : avr. 04, 2021
  *
  * MODIFIED BY : ARHS Developments
  *          ON :
@@ -20,27 +20,30 @@ package data;
 /**
  * <class_description>
  * <p><b>notes</b>:
- * <p>ON : avr. 01, 2021
+ * <p>ON : avr. 04, 2021
  *
  * @author ARHS Developments - hubertrm
  */
-public enum Rating {
+public class Review {
 
-	NOT_RATED("NOT RATED"),
-	ZERO_STAR("☆☆☆☆☆"),
-	ONE_STAR("★☆☆☆☆"),
-	TWO_STAR("★★☆☆☆"),
-	THREE_STAR("★★★☆☆"),
-	FOUR_STAR("★★★★☆"),
-	FIVE_STAR("★★★★★");
+	private Rating rating;
+	private String comments;
 
-	private final String starts;
-
-	Rating(String rating) {
-		this.starts = rating;
+	public Review(Rating rating, String comments) {
+		this.rating = rating;
+		this.comments = comments;
 	}
 
-	public String getStars() {
-		return starts;
+	public Rating getRating() {
+		return rating;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	@Override
+	public String toString() {
+		return "Review{" + "rating=" + rating + ", comments='" + comments + '\'' + '}';
 	}
 }

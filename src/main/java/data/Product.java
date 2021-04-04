@@ -28,13 +28,13 @@ import java.time.LocalDate;
  *    Each product has an id, name, price
  * <br>
  * <p>ON : mars 21, 2021
- * Each product can have a discout, calculated based on a
+ * Each product can have a discount, calculated based on a
  * {@link DISCOUNT_RATE discount rate}
  *
  * @version 1.0
  * @author ARHS Developments - hubertrm
  */
-public abstract class Product {
+public abstract class Product implements Rateable<Product>{
 
 	/**
 	 * A constant that defines a {@link java.math.BigDecimal BigDecimal} value
@@ -63,8 +63,6 @@ public abstract class Product {
 		this.price = price;
 		this.rating = rating;
 	}
-
-	public abstract Product applyRating(Rating newRating);
 
 	/**
 	 * Get the value of bestBefore
