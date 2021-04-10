@@ -21,6 +21,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.function.Predicate;
 
 import data.Product;
 import data.ProductManager;
@@ -58,11 +59,13 @@ public class Shop {
 //		productManager.printProductReport(104);
 		productManager.reviewProduct(101, Rating.TWO_STAR, "Not sufficient");
 //		productManager.printProductReport(101);
+		productManager.getDiscounts().forEach((rating, discount) -> System.out.println(rating+"\t"+discount));
 		Comparator<Product> ratingSorter = (p1, p2) -> p2.getRating().ordinal() - p1.getRating().ordinal();
 		Comparator<Product> priceSorter = (p1, p2) -> p2.getPrice().compareTo(p1.getPrice());
-		productManager.printProducts(ratingSorter);
-		productManager.printProducts(priceSorter);
-		productManager.printProducts(priceSorter.thenComparing(ratingSorter));
+		Predicate<Product> priceFilter = p -> p.getPrice().intValue() < 2;
+		productManager.printProducts(priceFilter, ratingSorter);
+		productManager.printProducts(priceFilter, priceSorter);
+		productManager.printProducts(priceFilter, priceSorter.thenComparing(ratingSorter).reversed());
 	}
 
 }
