@@ -27,7 +27,6 @@ package data;
 public enum Rating {
 
 	NOT_RATED("NOT RATED"),
-	ZERO_STAR("☆☆☆☆☆"),
 	ONE_STAR("★☆☆☆☆"),
 	TWO_STAR("★★☆☆☆"),
 	THREE_STAR("★★★☆☆"),
