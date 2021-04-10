@@ -63,7 +63,6 @@ public class Shop {
 //		System.out.println(p7);
 //		System.out.println(p8);
 //		System.out.println(p9);
-		productManager.printProductReport();
 	}
 
 }
