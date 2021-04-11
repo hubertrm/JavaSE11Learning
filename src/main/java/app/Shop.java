@@ -41,7 +41,7 @@ public class Shop {
 	public static void main(String[] args) {
 		ProductManager productManager = new ProductManager("en-GB");
 		productManager.createProduct(101, "Tea", BigDecimal.valueOf(1.99), Rating.THREE_STAR);
-//		productManager.printProductReport(101);
+		productManager.printProductReport(43);
 //		productManager.changeLocale("fr-FR");
 		productManager.reviewProduct(101, Rating.FOUR_STAR, "Nice hot cup of tea");
 //		productManager.printProductReport(101);

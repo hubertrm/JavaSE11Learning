@@ -18,7 +18,6 @@
 package data;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
 import java.time.LocalDate;
@@ -34,7 +33,10 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
+
 
 /**
  * <class_description>
@@ -44,6 +46,8 @@ import java.util.stream.Collectors;
  * @author ARHS Developments - hubertrm
  */
 public class ProductManager {
+
+	private static final Logger LOGGER = Logger.getLogger(ProductManager.class.getName());
 
 	private final Map<Product, List<Review>> products = new HashMap<>();
 	private ResourceFormatter formatter;
@@ -74,7 +78,12 @@ public class ProductManager {
 	}
 
 	public Product reviewProduct(int id, Rating rating, String comments) {
-		return reviewProduct(findProduct(id), rating, comments);
+		try {
+			return reviewProduct(findProduct(id), rating, comments);
+		} catch (ProductManagerException e) {
+			LOGGER.log(Level.INFO, e.getMessage());
+		}
+		return null;
 	}
 
 	public Product reviewProduct(Product product, Rating rating, String comments) {
@@ -93,7 +102,11 @@ public class ProductManager {
 	}
 
 	public void printProductReport(int id) {
-		printProductReport(findProduct(id));
+		try {
+			printProductReport(findProduct(id));
+		} catch (ProductManagerException e) {
+			LOGGER.log(Level.INFO, e.getMessage());
+		}
 	}
 
 	public void printProductReport(Product product) {
@@ -122,12 +135,12 @@ public class ProductManager {
 		System.out.println(txt);
 	}
 
-	public Product findProduct(int id) {
+	public Product findProduct(int id) throws ProductManagerException {
 		return products.keySet()
 				.stream()
 				.filter(product -> product.getId() == id)
 				.findFirst()
-				.orElseGet(() -> null);
+				.orElseThrow(() -> new ProductManagerException("Product with id "+id+" not found"));
 	}
 
 	public void changeLocale(String languageTag) {
@@ -136,6 +149,14 @@ public class ProductManager {
 
 	public static Set<String> getSupportedLocales() {
 		return formatters.keySet();
+	}
+
+	public Map<String, String> getDiscounts() {
+		return products.keySet()
+				.stream()
+				.collect(Collectors.groupingBy(product -> product.getRating().getStars(),
+						Collectors.collectingAndThen(Collectors.summingDouble(product -> product.getDiscount().doubleValue()),
+								formatter.moneyFormat::format)));
 	}
 
 	private static class ResourceFormatter {
