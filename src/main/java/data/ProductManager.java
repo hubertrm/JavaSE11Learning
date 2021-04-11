@@ -20,8 +20,10 @@ package data;
 import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,11 +52,15 @@ public class ProductManager {
 	private static final Logger LOGGER = Logger.getLogger(ProductManager.class.getName());
 
 	private final Map<Product, List<Review>> products = new HashMap<>();
+	private final ResourceBundle config = ResourceBundle.getBundle("config");
 	private ResourceFormatter formatter;
 	private static final Map<String, ResourceFormatter> formatters =
 			Map.of("en-GB", new ResourceFormatter(Locale.UK),
 					"en-US", new ResourceFormatter(Locale.US),
 					"fr-FR", new ResourceFormatter(Locale.FRANCE));
+
+	private final MessageFormat reviewFormat = new MessageFormat(config.getString("review.data.format"));
+	private final MessageFormat productFormat = new MessageFormat(config.getString("product.data.format"));
 
 	public ProductManager(Locale locale) {
 		this(locale.toLanguageTag());
@@ -122,7 +128,7 @@ public class ProductManager {
 			          .map(review -> formatter.formatReview(review) + '\n')
 			          .collect(Collectors.joining()));
 		}
-		System.out.println(txt);
+		LOGGER.log(Level.INFO, txt::toString);
 	}
 
 	public void printProducts(Predicate<Product> filter, Comparator<Product> sorter) {
@@ -131,8 +137,8 @@ public class ProductManager {
 				.stream()
 				.sorted(sorter)
 				.filter(filter)
-				.forEach(product -> txt.append(formatter.formatProduct(product) + '\n'));
-		System.out.println(txt);
+				.forEach(product -> txt.append(formatter.formatProduct(product)).append('\n'));
+		LOGGER.log(Level.INFO, txt::toString);
 	}
 
 	public Product findProduct(int id) throws ProductManagerException {
@@ -149,6 +155,36 @@ public class ProductManager {
 
 	public static Set<String> getSupportedLocales() {
 		return formatters.keySet();
+	}
+
+	public void parseReview(String txt) {
+		try {
+			Object[] values = reviewFormat.parse(txt);
+			reviewProduct(Integer.parseInt((String)values[0]),
+					Rateable.convert(Integer.parseInt((String)values[1])),
+					(String)values[2]);
+		} catch (ParseException | NumberFormatException e) {
+			LOGGER.log(Level.WARNING, () -> "Error parsing review "+txt);
+		}
+	}
+
+	public void parseProduct(String txt) {
+		try {
+			Object[] values = productFormat.parse(txt);
+			int id = Integer.parseInt((String)values[1]);
+			String name = (String)values[2];
+			BigDecimal price = BigDecimal.valueOf(Double.parseDouble((String)values[3]));
+			Rating rating = Rateable.convert(Integer.parseInt((String)values[4]));
+			switch ((String) values[0]) {
+			case "D":
+				createProduct(id, name, price, rating);
+			case "F":
+				LocalDate bestBefore = LocalDate.parse((String) values[5]);
+				createProduct(id, name, price, rating, bestBefore);
+			}
+		} catch (ParseException | NumberFormatException | DateTimeParseException e) {
+			LOGGER.log(Level.WARNING, () -> "Error parsing product "+txt);
+		}
 	}
 
 	public Map<String, String> getDiscounts() {

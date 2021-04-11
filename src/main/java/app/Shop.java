@@ -20,7 +20,6 @@ package app;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Comparator;
-import java.util.Locale;
 import java.util.function.Predicate;
 
 import data.Product;
@@ -41,9 +40,12 @@ public class Shop {
 	public static void main(String[] args) {
 		ProductManager productManager = new ProductManager("en-GB");
 		productManager.createProduct(101, "Tea", BigDecimal.valueOf(1.99), Rating.THREE_STAR);
-		productManager.printProductReport(43);
+		productManager.printProductReport(101);
 //		productManager.changeLocale("fr-FR");
 		productManager.reviewProduct(101, Rating.FOUR_STAR, "Nice hot cup of tea");
+		productManager.parseReview("101,x,Nice hot cup of tea");
+		productManager.parseProduct("D,101,Tea,1.99,0,2019-09-19");
+		productManager.printProductReport(101);
 //		productManager.printProductReport(101);
 		productManager.createProduct(102, "Coffee", BigDecimal.valueOf(1.99), Rating.FOUR_STAR);
 //		productManager.printProductReport(102);
@@ -66,6 +68,9 @@ public class Shop {
 		productManager.printProducts(priceFilter, ratingSorter);
 		productManager.printProducts(priceFilter, priceSorter);
 		productManager.printProducts(priceFilter, priceSorter.thenComparing(ratingSorter).reversed());
+
+
+		productManager.parseProduct("F,101,Tea,1.99,0,2019-09-49");
 	}
 
 }
