@@ -17,6 +17,8 @@
  */
 package data;
 
+import java.io.Serializable;
+
 /**
  * <class_description>
  * <p><b>notes</b>:
@@ -24,7 +26,7 @@ package data;
  *
  * @author ARHS Developments - hubertrm
  */
-public class Review implements Comparable<Review> {
+public class Review implements Comparable<Review>, Serializable {
 
 	private Rating rating;
 	private String comments;
