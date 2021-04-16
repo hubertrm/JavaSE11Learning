@@ -58,7 +58,7 @@ public class ProductFileManager implements ProductManager {
 	private static final Logger LOGGER = Logger.getLogger(ProductFileManager.class.getName());
 
 	private Map<Product, List<Review>> products = new HashMap<>();
-	private final ResourceBundle config = ResourceBundle.getBundle("labs.file.service.config");
+	private final ResourceBundle config = ResourceBundle.getBundle("config");
 
 	private final Path dataFolder = Path.of(config.getString("data.folder"));
 	private final Path tempFolder = Path.of(config.getString("temp.folder"));

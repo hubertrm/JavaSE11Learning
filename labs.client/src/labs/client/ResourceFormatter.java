@@ -53,7 +53,7 @@ public class ResourceFormatter {
 
 	private ResourceFormatter(Locale locale) {
 		this.locale = locale;
-		resources = ResourceBundle.getBundle("labs.client.resources", this.locale);
+		resources = ResourceBundle.getBundle("resources", this.locale);
 		dateFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).localizedBy(this.locale);
 		moneyFormat = NumberFormat.getCurrencyInstance(this.locale);
 	}
@@ -83,6 +83,6 @@ public class ResourceFormatter {
 	}
 
 	public String formatData(String resource, String ...values) {
-		return MessageFormat.format(getText(resource), values);
+		return MessageFormat.format(getText(resource), (Object[]) values);
 	}
 }
