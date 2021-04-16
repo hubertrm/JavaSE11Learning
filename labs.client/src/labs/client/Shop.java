@@ -26,6 +26,8 @@ import labs.pm.data.Rating;
 import labs.pm.data.Review;
 import labs.pm.service.ProductManager;
 import labs.pm.service.ProductManagerException;
+import labs.policy.BusinessPolicies;
+import labs.policy.BusinessPolicy;
 
 /**
  * {@code Shop} class represents an application that manages Products
@@ -34,6 +36,10 @@ import labs.pm.service.ProductManagerException;
  *
  * @author Hubert Romain - hubertrm
  */
+@BusinessPolicies({
+		@BusinessPolicy(name = "Returns Policy", countries = "GB", value = "4 weeks"),
+		@BusinessPolicy(countries = { "GB", "FR" }, value = "Ship via Dover-Calais")
+                  })
 public class Shop {
 
 	private static  final Logger logger = Logger.getLogger(Shop.class.getName());
