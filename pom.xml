@@ -8,7 +8,7 @@
     <artifactId>ProductManagement</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>ProductManagement</name>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -43,22 +43,93 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                            <mainClass>labs.client.Shop</mainClass>
-                        </manifest>
-                    </archive>
+                    <release>11</release>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>6.2</version> <!-- Use newer version of ASM -->
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jlink-plugin</artifactId>
+                <version>3.1.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <noHeaderFiles>true</noHeaderFiles>
+                    <noManPages>true</noManPages>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jmod-plugin</artifactId>
+                <version>3.0.0-alpha-1</version>
+                <extensions>true</extensions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.ow2.asm</groupId>
+                        <artifactId>asm</artifactId>
+                        <version>7.1</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.0.0-m3</version>
+                <executions>
+                    <?m2e ignore ?>
+                    <!--
+                      ! Currently turned off enforcer cause
+                      ! we are using SNAPSHOT versions of plugins
+                      ! which are by default forbidden by
+                      ! the inherited enforcer rules.
+                    -->
+                    <execution>
+                        <id>enforce-maven</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>11</version>
+                        </jdk>
+                    </toolchains>
                 </configuration>
             </plugin>
         </plugins>
     </build>
+
+    <modules>
+        <module>labs.client</module>
+        <module>labs.file</module>
+        <module>labs.pm</module>
+        <module>labs.policy</module>
+        <module>labs.jar</module>
+        <module>labs.jlink</module>
+    </modules>
 </project>

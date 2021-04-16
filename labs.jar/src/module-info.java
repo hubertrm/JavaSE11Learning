@@ -1,7 +1,7 @@
 /* ----------------------------------------------------------------------------
  *     PROJECT : Java SE: Programming Complete - 25th Anniversary
  *
- *      MODULE : labs.policy
+ *      MODULE : labs.jar
  *        FILE : module-info.java
  *
  *  CREATED BY : Hubert Romain
@@ -9,6 +9,6 @@
  *
  * ----------------------------------------------------------------------------
  */
-module labs.policy {
-	exports labs.policy;
+module labs.jar {
+	requires java.base;
 }
