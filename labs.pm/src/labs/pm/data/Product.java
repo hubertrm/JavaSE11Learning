@@ -1,21 +1,15 @@
 /* ----------------------------------------------------------------------------
- *     PROJECT : EURES
+ *     PROJECT : Java SE: Programming Complete - 25th Anniversary
  *
- *     PACKAGE : data
+ *     PACKAGE : labs.pm.data
  *        FILE : Product.java
  *
- *  CREATED BY : ARHS Developments
+ *  CREATED BY : Hubert Romain
  *          ON : mars 21, 2021
  *
- * MODIFIED BY : ARHS Developments
- *          ON :
- *     VERSION :
- *
- * ----------------------------------------------------------------------------
- * Copyright (c) 2021 European Commission - DG EMPL
  * ----------------------------------------------------------------------------
  */
-package data;
+package labs.pm.data;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -33,12 +27,12 @@ import java.time.LocalDate;
  * {@link DISCOUNT_RATE discount rate}
  *
  * @version 1.0
- * @author ARHS Developments - hubertrm
+ * @author Hubert Romain - hubertrm
  */
 public abstract class Product implements Rateable<Product>, Serializable {
 
 	/**
-	 * A constant that defines a {@link java.math.BigDecimal BigDecimal} value
+	 * A constant that defines a {@link BigDecimal BigDecimal} value
 	 * of the discount rate
 	 * <br>
 	 * Discount rate is 10%
@@ -76,7 +70,7 @@ public abstract class Product implements Rateable<Product>, Serializable {
 	/**
 	 * Calculates discount based on a product price and
 	 * {@link DISCOUNT_RATE discount rate}
-	 * @return a {@link java.math.BigDecimal BigDecimal} value of the discount
+	 * @return a {@link BigDecimal BigDecimal} value of the discount
 	 */
 	public BigDecimal getDiscount() {
 		return price.multiply(DISCOUNT_RATE).setScale(2, RoundingMode.HALF_UP);

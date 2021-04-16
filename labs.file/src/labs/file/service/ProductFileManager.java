@@ -1,49 +1,34 @@
 /* ----------------------------------------------------------------------------
- *     PROJECT : EUROPASS
+ *     PROJECT : Java SE: Programming Complete - 25th Anniversary
  *
- *     PACKAGE : data
+ *     PACKAGE : labs.pm.data
  *        FILE : ProductManager.java
  *
- *  CREATED BY : ARHS Developments
+ *  CREATED BY : Hubert Romain
  *          ON : avr. 01, 2021
  *
- * MODIFIED BY : ARHS Developments
- *          ON :
- *     VERSION :
- *
- * ----------------------------------------------------------------------------
- * Copyright (c) 2021 European Commission - DG EMPL
  * ----------------------------------------------------------------------------
  */
-package data;
+package labs.file.service;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.text.MessageFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.time.format.FormatStyle;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Predicate;
@@ -51,29 +36,30 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import labs.pm.data.Drink;
+import labs.pm.data.Food;
+import labs.pm.data.Product;
+import labs.pm.data.Rateable;
+import labs.pm.data.Rating;
+import labs.pm.data.Review;
+import labs.pm.service.ProductManager;
+import labs.pm.service.ProductManagerException;
+
 
 /**
  * <class_description>
  * <p><b>notes</b>:
  * <p>ON : avr. 01, 2021
  *
- * @author ARHS Developments - hubertrm
+ * @author Hubert Romain - hubertrm
  */
-public class ProductManager {
+public class ProductFileManager implements ProductManager {
 
-	private static final ProductManager PRODUCT_MANAGER = new ProductManager();
-
-	private static final Logger LOGGER = Logger.getLogger(ProductManager.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(ProductFileManager.class.getName());
 
 	private Map<Product, List<Review>> products = new HashMap<>();
-	private final ResourceBundle config = ResourceBundle.getBundle("config");
+	private final ResourceBundle config = ResourceBundle.getBundle("labs.file.service.config");
 
-	private static final Map<String, ResourceFormatter> formatters =
-			Map.of("en-GB", new ResourceFormatter(Locale.UK),
-					"en-US", new ResourceFormatter(Locale.US),
-					"fr-FR", new ResourceFormatter(Locale.FRANCE));
-
-	private final Path reportsFolder = Path.of(config.getString("reports.folder"));
 	private final Path dataFolder = Path.of(config.getString("data.folder"));
 	private final Path tempFolder = Path.of(config.getString("temp.folder"));
 
@@ -84,12 +70,8 @@ public class ProductManager {
 	private final Lock writeLock = lock.writeLock();
 	private final Lock readLock = lock.readLock();
 
-	private ProductManager() {
+	public ProductFileManager() {
 		loadAllData();
-	}
-
-	public static ProductManager getInstance() {
-		return PRODUCT_MANAGER;
 	}
 
 	public Product createProduct(int id, String name, BigDecimal price, Rating rating, LocalDate bestBefore) {
@@ -147,52 +129,6 @@ public class ProductManager {
 		return product;
 	}
 
-	public void printProductReport(int id, String languageTag, String client) {
-		try {
-			readLock.lock();
-			printProductReport(findProduct(id), languageTag, client);
-		} catch (ProductManagerException e) {
-			LOGGER.log(Level.INFO, e.getMessage());
-		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, e, () -> "Error printing product report" + e.getMessage());
-		} finally {
-			readLock.unlock();
-		}
-	}
-
-	private void printProductReport(Product product, String languageTag, String client) throws IOException {
-		ResourceFormatter formatter = formatters.getOrDefault(languageTag, formatters.get("en-GB"));
-		List<Review> reviews = products.get(product);
-
-		Path productFile = reportsFolder.resolve(MessageFormat.format(config.getString("report.file"),
-				product.getId(), client));
-		try (PrintWriter out = new PrintWriter(
-				new OutputStreamWriter(Files.newOutputStream(productFile, StandardOpenOption.CREATE),
-						StandardCharsets.UTF_8))) {
-			out.append(formatter.formatProduct(product)).append(System.lineSeparator());
-			Collections.sort(reviews);
-			if (reviews.isEmpty()) {
-				out.append(formatter.getText("no.reviews")).append(System.lineSeparator());
-			} else {
-				out.append(reviews.stream()
-						.map(review -> formatter.formatReview(review) + System.lineSeparator())
-						.collect(Collectors.joining()));
-			}
-		}
-	}
-
-	public void printProducts(Predicate<Product> filter, Comparator<Product> sorter, String languageTag) {
-		try {
-			readLock.lock();
-			ResourceFormatter formatter = formatters.getOrDefault(languageTag, formatters.get("en_GB"));
-			StringBuilder txt = new StringBuilder();
-			products.keySet().stream().sorted(sorter).filter(filter).forEach(product -> txt.append(formatter.formatProduct(product)).append('\n'));
-			LOGGER.log(Level.INFO, txt::toString);
-		} finally {
-			readLock.unlock();
-		}
-	}
-
 	public Product findProduct(int id) throws ProductManagerException {
 		try {
 			readLock.lock();
@@ -206,8 +142,27 @@ public class ProductManager {
 		}
 	}
 
-	public static Set<String> getSupportedLocales() {
-		return formatters.keySet();
+	@Override
+	public List<Product> findProducts(Predicate<Product> filter) throws ProductManagerException {
+		return products.keySet().stream().filter(filter).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<Review> findReviews(int id) throws ProductManagerException {
+		return products.get(products.keySet()
+				.stream()
+				.filter(product -> product.getId() == id)
+				.findFirst()
+				.orElseThrow(() -> new ProductManagerException("Product with id "+id+" not found")));
+	}
+
+	@Override
+	public Map<Rating, BigDecimal> getDiscounts(String languageTag) throws ProductManagerException {
+		return products.keySet()
+				.stream()
+				.collect(Collectors.groupingBy(Product::getRating,
+						Collectors.collectingAndThen(Collectors.summingDouble(product -> product.getDiscount().doubleValue()),
+								BigDecimal::valueOf)));
 	}
 
 	private Review parseReview(String txt) {
@@ -246,20 +201,6 @@ public class ProductManager {
 		return product;
 	}
 
-	public Map<String, String> getDiscounts(String languageTag) {
-		try {
-			readLock.lock();
-			ResourceFormatter formatter = formatters.getOrDefault(languageTag, formatters.get("en_GB"));
-			return products.keySet()
-					.stream()
-					.collect(Collectors.groupingBy(product -> product.getRating().getStars(),
-							Collectors.collectingAndThen(Collectors.summingDouble(product -> product.getDiscount().doubleValue()),
-									formatter.moneyFormat::format)));
-		} finally {
-			readLock.unlock();
-		}
-	}
-
 	private void dumpData() {
 		try {
 			if (Files.notExists(tempFolder)) {
@@ -271,7 +212,7 @@ public class ProductManager {
 //				products = new HashMap<>();
 			}
 		} catch (IOException e) {
-			LOGGER.log(Level.SEVERE, () -> "Error dumping data "+e.getMessage());
+			LOGGER.log(Level.SEVERE, () -> "Error dumping labs.pm.data "+e.getMessage());
 		}
 	}
 
@@ -328,38 +269,5 @@ public class ProductManager {
 			}
 		}
 		return reviews;
-	}
-
-	private static class ResourceFormatter {
-
-		private final Locale locale;
-		private final ResourceBundle resources;
-		private final DateTimeFormatter dateFormat;
-		private final NumberFormat moneyFormat;
-
-		private ResourceFormatter(Locale locale) {
-			this.locale = locale;
-			resources = ResourceBundle.getBundle("resources", this.locale);
-			dateFormat = DateTimeFormatter.ofLocalizedDate(FormatStyle.SHORT).localizedBy(this.locale);
-			moneyFormat = NumberFormat.getCurrencyInstance(this.locale);
-		}
-
-		private String formatProduct(Product product) {
-			return MessageFormat.format(resources.getString("product"),
-					product.getName(),
-					moneyFormat.format(product.getPrice()),
-					product.getRating().getStars(),
-					dateFormat.format(product.getBestBefore()));
-		}
-
-		private String formatReview(Review review) {
-			return MessageFormat.format(resources.getString("review"),
-					review.getRating().getStars(),
-					review.getComments());
-		}
-
-		private String getText(String key) {
-			return resources.getString(key);
-		}
 	}
 }

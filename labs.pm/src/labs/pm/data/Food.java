@@ -1,21 +1,15 @@
 /* ----------------------------------------------------------------------------
- *     PROJECT : EUROPASS
+ *     PROJECT : Java SE: Programming Complete - 25th Anniversary
  *
- *     PACKAGE : data
+ *     PACKAGE : labs.pm.data
  *        FILE : Food.java
  *
- *  CREATED BY : ARHS Developments
+ *  CREATED BY : Hubert Romain
  *          ON : avr. 01, 2021
  *
- * MODIFIED BY : ARHS Developments
- *          ON :
- *     VERSION :
- *
- * ----------------------------------------------------------------------------
- * Copyright (c) 2021 European Commission - DG EMPL
  * ----------------------------------------------------------------------------
  */
-package data;
+package labs.pm.data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,13 +19,13 @@ import java.time.LocalDate;
  * <p><b>notes</b>:
  * <p>ON : avr. 01, 2021
  *
- * @author ARHS Developments - hubertrm
+ * @author Hubert Romain - hubertrm
  */
 public final class Food extends Product {
 
 	private LocalDate bestBefore;
 
-	Food(int id, String name, BigDecimal price, Rating rating, LocalDate bestBefore) {
+	public Food(int id, String name, BigDecimal price, Rating rating, LocalDate bestBefore) {
 		super(id, name, price, rating);
 		this.bestBefore = bestBefore;
 

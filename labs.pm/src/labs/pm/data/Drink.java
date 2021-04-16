@@ -1,21 +1,15 @@
 /* ----------------------------------------------------------------------------
- *     PROJECT : EUROPASS
+ *     PROJECT : Java SE: Programming Complete - 25th Anniversary
  *
- *     PACKAGE : data
+ *     PACKAGE : labs.pm.data
  *        FILE : Drink.java
  *
- *  CREATED BY : ARHS Developments
+ *  CREATED BY : Hubert Romain
  *          ON : avr. 01, 2021
  *
- * MODIFIED BY : ARHS Developments
- *          ON :
- *     VERSION :
- *
- * ----------------------------------------------------------------------------
- * Copyright (c) 2021 European Commission - DG EMPL
  * ----------------------------------------------------------------------------
  */
-package data;
+package labs.pm.data;
 
 import java.math.BigDecimal;
 import java.time.LocalTime;
@@ -25,11 +19,11 @@ import java.time.LocalTime;
  * <p><b>notes</b>:
  * <p>ON : avr. 01, 2021
  *
- * @author ARHS Developments - hubertrm
+ * @author Hubert Romain - hubertrm
  */
 public final class Drink extends Product {
 
-	Drink(int id, String name, BigDecimal price, Rating rating) {
+	public Drink(int id, String name, BigDecimal price, Rating rating) {
 		super(id, name, price, rating);
 	}
 

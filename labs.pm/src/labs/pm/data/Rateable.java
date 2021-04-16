@@ -1,28 +1,22 @@
 /* ----------------------------------------------------------------------------
- *     PROJECT : EUROPASS
+ *     PROJECT : Java SE: Programming Complete - 25th Anniversary
  *
- *     PACKAGE : data
+ *     PACKAGE : labs.pm.data
  *        FILE : Rateable.java
  *
- *  CREATED BY : ARHS Developments
+ *  CREATED BY : Hubert Romain
  *          ON : avr. 04, 2021
  *
- * MODIFIED BY : ARHS Developments
- *          ON :
- *     VERSION :
- *
- * ----------------------------------------------------------------------------
- * Copyright (c) 2021 European Commission - DG EMPL
  * ----------------------------------------------------------------------------
  */
-package data;
+package labs.pm.data;
 
 /**
  * <class_description>
  * <p><b>notes</b>:
  * <p>ON : avr. 04, 2021
  *
- * @author ARHS Developments - hubertrm
+ * @author Hubert Romain - hubertrm
  */
 @FunctionalInterface
 public interface Rateable<T> {

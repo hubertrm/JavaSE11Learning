@@ -1,21 +1,15 @@
 /* ----------------------------------------------------------------------------
- *     PROJECT : EUROPASS
+ *     PROJECT : Java SE: Programming Complete - 25th Anniversary
  *
- *     PACKAGE : data
+ *     PACKAGE : labs.pm.data
  *        FILE : Review.java
  *
- *  CREATED BY : ARHS Developments
+ *  CREATED BY : Hubert Romain
  *          ON : avr. 04, 2021
  *
- * MODIFIED BY : ARHS Developments
- *          ON :
- *     VERSION :
- *
- * ----------------------------------------------------------------------------
- * Copyright (c) 2021 European Commission - DG EMPL
  * ----------------------------------------------------------------------------
  */
-package data;
+package labs.pm.data;
 
 import java.io.Serializable;
 
@@ -24,7 +18,7 @@ import java.io.Serializable;
  * <p><b>notes</b>:
  * <p>ON : avr. 04, 2021
  *
- * @author ARHS Developments - hubertrm
+ * @author Hubert Romain - hubertrm
  */
 public class Review implements Comparable<Review>, Serializable {
 

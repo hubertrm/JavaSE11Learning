@@ -1,37 +1,31 @@
 /* ----------------------------------------------------------------------------
- *     PROJECT : EUROPASS
+ *     PROJECT : Java SE: Programming Complete - 25th Anniversary
  *
- *     PACKAGE : data
+ *     PACKAGE : labs.pm.data
  *        FILE : Rating.java
  *
- *  CREATED BY : ARHS Developments
+ *  CREATED BY : Hubert Romain
  *          ON : avr. 01, 2021
  *
- * MODIFIED BY : ARHS Developments
- *          ON :
- *     VERSION :
- *
- * ----------------------------------------------------------------------------
- * Copyright (c) 2021 European Commission - DG EMPL
  * ----------------------------------------------------------------------------
  */
-package data;
+package labs.pm.data;
 
 /**
  * <class_description>
  * <p><b>notes</b>:
  * <p>ON : avr. 01, 2021
  *
- * @author ARHS Developments - hubertrm
+ * @author Hubert Romain - hubertrm
  */
 public enum Rating {
 
 	NOT_RATED("NOT RATED"),
-	ONE_STAR("★☆☆☆☆"),
-	TWO_STAR("★★☆☆☆"),
-	THREE_STAR("★★★☆☆"),
-	FOUR_STAR("★★★★☆"),
-	FIVE_STAR("★★★★★");
+	ONE_STAR("\u2605\u2606\u2606\u2606\u2606"),
+	TWO_STAR("\u2605\u2605\u2606\u2606\u2606"),
+	THREE_STAR("\u2605\u2605\u2605\u2606\u2606"),
+	FOUR_STAR("\u2605\u2605\u2605\u2605\u2606"),
+	FIVE_STAR("\u2605\u2605\u2605\u2605\u2605");
 
 	private final String starts;
 
