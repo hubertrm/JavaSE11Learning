@@ -35,6 +35,7 @@ import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import labs.pm.data.Drink;
 import labs.pm.data.Food;
@@ -209,7 +210,6 @@ public class ProductFileManager implements ProductManager {
 			Path tempFile = tempFolder.resolve(MessageFormat.format(config.getString("temp.file"), LocalDate.now()));
 			try (ObjectOutputStream out = new ObjectOutputStream(Files.newOutputStream(tempFile, StandardOpenOption.CREATE))) {
 				out.writeObject(products);
-//				products = new HashMap<>();
 			}
 		} catch (IOException e) {
 			LOGGER.log(Level.SEVERE, () -> "Error dumping labs.pm.data "+e.getMessage());
@@ -218,9 +218,8 @@ public class ProductFileManager implements ProductManager {
 
 	@SuppressWarnings("unchecked")
 	private void restoreData() {
-		try {
-			Path tempFile = Files.list(tempFolder)
-										.filter(path -> path.getFileName().toString().endsWith("tmp"))
+		try (Stream<Path> files = Files.list(tempFolder)) {
+			Path tempFile = files.filter(path -> path.getFileName().toString().endsWith("tmp"))
 										.findFirst()
 										.orElseThrow();
 			try (ObjectInputStream in = new ObjectInputStream(Files.newInputStream(tempFile, StandardOpenOption.DELETE_ON_CLOSE))) {
@@ -232,8 +231,8 @@ public class ProductFileManager implements ProductManager {
 	}
 
 	private void loadAllData() {
-		try {
-			products = Files.list(dataFolder)
+		try (Stream<Path> files = Files.list(dataFolder)) {
+			products = files
 					.filter(file -> file.getFileName().toString().startsWith("product"))
 					.map(this::loadProduct)
 					.filter(Objects::nonNull)
@@ -245,8 +244,8 @@ public class ProductFileManager implements ProductManager {
 
 	private Product loadProduct(Path file) {
 		Product product = null;
-		try {
-			product = parseProduct(Files.lines(dataFolder.resolve(file), StandardCharsets.UTF_8).findFirst().orElseThrow());
+		try (Stream<String> fileLines = Files.lines(dataFolder.resolve(file), StandardCharsets.UTF_8)){
+			product = parseProduct(fileLines.findFirst().orElseThrow());
 		} catch (Exception e) {
 			LOGGER.log(Level.WARNING, () -> "Error loading product "+e.getMessage());
 		}
@@ -259,8 +258,8 @@ public class ProductFileManager implements ProductManager {
 		if (Files.notExists(file)) {
 			reviews = new ArrayList<>();
 		} else {
-			try {
-				reviews = Files.lines(file, StandardCharsets.UTF_8)
+			try (Stream<String> fileLines = Files.lines(file, StandardCharsets.UTF_8)) {
+				reviews = fileLines
 						.map(this::parseReview)
 						.filter(Objects::nonNull)
 						.collect(Collectors.toList());
